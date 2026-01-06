@@ -1,0 +1,4 @@
+
+parameters:
+    aiApi:
+        base_uri: http://localhost:11434

@@ -2,17 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Presentation\Error\Error4xx;
+namespace App\FrontModule\Presenters;
 
 use Nette;
 use Nette\Application\Attributes\Requires;
+use Nette\Application\UI\Presenter;
 
 
 /**
  * Handles 4xx HTTP error responses.
  */
 #[Requires(methods: '*', forward: true)]
-final class Error4xxPresenter extends Nette\Application\UI\Presenter
+final class Error4xxPresenter extends Presenter
 {
 	public function renderDefault(Nette\Application\BadRequestException $exception): void
 	{

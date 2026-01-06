@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace App\Presentation\Error\Error5xx;
+namespace App\FrontModule\Presenters;
 
 use Nette;
 use Nette\Application\Attributes\Requires;
+use Nette\Application\IPresenter;
 use Nette\Application\Responses;
 use Nette\Http;
 use Tracy\ILogger;
@@ -15,7 +16,7 @@ use Tracy\ILogger;
  * Handles uncaught exceptions and errors, and logs them.
  */
 #[Requires(forward: true)]
-final class Error5xxPresenter implements Nette\Application\IPresenter
+final class Error5xxPresenter implements IPresenter
 {
 	public function __construct(
 		private ILogger $logger,

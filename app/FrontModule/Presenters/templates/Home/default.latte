@@ -1,0 +1,46 @@
+{block content}
+
+<div class="container">
+    <header>
+        <h1 n:block="title">🚀 Commit Generator API</h1>
+        <p class="subtitle">Automatic generation of commit messages for your project</p>
+    </header>
+
+    <div class="endpoints">
+        <h2>📋 Available endpoints</h2>
+
+        <div class="endpoint">
+            <div>
+                <span class="method post">POST</span>
+                <span class="path">/api/v1/ai</span>
+            </div>
+            <p class="description">
+                Generates a conventional commit message based on the provided <strong> git diff </strong> result.
+            </p>
+        </div>
+
+        <div class="endpoint">
+            <div>
+                <span class="method get">GET</span>
+                <span class="path">/api/v1/status</span>
+            </div>
+            <p class="description">
+                Displays info about the API.
+            </p>
+        </div>
+
+        <div class="endpoint">
+            <div>
+                <span class="method get">GET</span>
+                <span class="path">/api/v1/ping</span>
+            </div>
+            <p class="description">
+                Responds with "Pong!"
+            </p>
+        </div>
+    </div>
+    <footer>
+        <a href="https://github.com/mxttyseq/commit-generator"><img class="icon" src="/images/github.png" alt="github repo"></a>
+        <p class="version">Version 1.0.0</p>
+    </footer>
+</div>

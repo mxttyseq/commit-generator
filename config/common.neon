@@ -7,7 +7,7 @@ application:
 	errorPresenter:
 		4xx: Error:Error4xx
 		5xx: Error:Error5xx
-	mapping: App\Presentation\*\**Presenter
+	mapping: App\*Module\Presenters\*Presenter
 
 
 database:
@@ -20,7 +20,7 @@ latte:
 	strictTypes: yes
 	strictParsing: yes
 	extensions:
-		- App\Presentation\Accessory\LatteExtension
+		- App\Model\Accessory\LatteExtension
 
 
 assets:

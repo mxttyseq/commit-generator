@@ -12,10 +12,15 @@ final class RouterFactory
 {
 	use Nette\StaticClass;
 
+    private const string API_PATH = 'api/v1/';
+
 	public static function createRouter(): RouteList
 	{
 		$router = new RouteList;
-		$router->addRoute('<presenter>/<action>[/<id>]', 'Home:default');
+        $router->addRoute(self::API_PATH . 'ping', 'Api:Generator:ping');
+        $router->addRoute(self::API_PATH . 'status', 'Api:Generator:status');
+        $router->addRoute(self::API_PATH . 'ai', 'Api:Generator:ai');
+        $router->addRoute('<presenter>/<action>[/<id>]', 'Front:Home:default');
 		return $router;
 	}
 }
