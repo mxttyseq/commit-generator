@@ -35,3 +35,7 @@ RUN sed -i '/<Directory \/var\/www\/>/,/<\/Directory>/ s/AllowOverride None/Allo
 EXPOSE 8081
 
 CMD ["apache2-foreground"]
+
+RUN apt-get update \
+ && apt-get install -y curl zstd \
+ && rm -rf /var/lib/apt/lists/*

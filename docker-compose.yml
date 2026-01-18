@@ -1,9 +1,40 @@
 version: '3.8'
 
 services:
+  # --- 1. Tvoje PHP aplikace ---
   web:
-    build: .
+    build: .                 # Použije tvůj upravený Dockerfile (bez Ollamy)
     container_name: commit-generator
     ports:
       - "8081:8081"
     restart: unless-stopped
+    environment:
+      - OLLAMA_HOST=ollama:11434 # Proměnná pro tvůj PHP skript
+    depends_on:
+      - ollama
+
+  # --- 2. Ollama AI Server ---
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    volumes:
+      - ollama_data:/root/.ollama # Zde se trvale uloží stažené modely
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
+
+  # --- 3. Automatický stahovač modelu (jednorázovka) ---
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: ollama-puller
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_HOST=ollama:11434
+    # Tento příkaz počká 5s na start serveru a pak stáhne model.
+    # Po stažení se tento kontejner sám vypne (to je v pořádku).
+    entrypoint: /bin/sh
+    command: -c "sleep 5; ollama pull llama3.2:3b"
+
+volumes:
+  ollama_data:

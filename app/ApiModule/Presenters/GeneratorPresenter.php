@@ -52,9 +52,15 @@ class GeneratorPresenter extends Presenter
     #[Requires(methods: IRequest::Get)] //TODO: post
     public function actionAi(): never
     {
-        $postData = $this->httpRequest->getRawBody();
+        /*$postData = $this->httpRequest->getRawBody();
         $decodedData = Json::decode($postData, true);
-        $data = $decodedData['data'] ?? null;
-        //TODO:
+        $data = $decodedData['data'] ?? null;*/
+        $url = 'http://ollama:11434/api/version';
+        $res = $this->client->request('GET', $url, []);
+        $this->sendJson( //TODO:
+            [
+                'data' => $res->getBody()->getContents(),
+            ],
+        );
     }
 }
