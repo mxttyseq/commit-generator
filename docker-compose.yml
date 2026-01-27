@@ -1,29 +1,44 @@
-version: '3.8'
-
 services:
-  # --- 1. Tvoje PHP aplikace ---
-  web:
-    build: .                 # Použije tvůj upravený Dockerfile (bez Ollamy)
-    container_name: commit-generator
+  # --- 1. PHP Backend (API) ---
+  api:
+    build:
+      context: ./api         # Cesta ke složce s Dockerfilem API
+    container_name: commit-generator-api
     ports:
       - "8081:8081"
     restart: unless-stopped
     environment:
-      - OLLAMA_HOST=ollama:11434 # Proměnná pro tvůj PHP skript
+      - OLLAMA_HOST=ollama:11434
+    volumes:
+      - ./api:/var/www/html  # Hot-reload: změny v kódu se projeví hned
     depends_on:
       - ollama
 
-  # --- 2. Ollama AI Server ---
+  # --- 2. Frontend ---
+  frontend:
+    build:
+      context: ./frontend    # Cesta ke složce s Dockerfilem Frontendu
+    container_name: commit-generator-frontend
+    ports:
+      - "1234:1234"          # Vlevo port v prohlížeči, vpravo port aplikace (Vite=5173, React=3000)
+    volumes:
+      - ./frontend:/app      # Hot-reload pro frontend
+      - /app/node_modules    # Aby se nepřepisovaly node_modules z hosta
+    restart: unless-stopped
+    depends_on:
+      - api                  # Frontend nastartuje až po API
+
+  # --- 3. Ollama AI Server ---
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
     volumes:
-      - ollama_data:/root/.ollama # Zde se trvale uloží stažené modely
+      - ollama_data:/root/.ollama
     ports:
       - "11434:11434"
     restart: unless-stopped
 
-  # --- 3. Automatický stahovač modelu (jednorázovka) ---
+  # --- 4. Automatický stahovač modelu ---
   ollama-init:
     image: ollama/ollama:latest
     container_name: ollama-puller
@@ -31,10 +46,8 @@ services:
       - ollama
     environment:
       - OLLAMA_HOST=ollama:11434
-    # Tento příkaz počká 5s na start serveru a pak stáhne model.
-    # Po stažení se tento kontejner sám vypne (to je v pořádku).
     entrypoint: /bin/sh
-    command: -c "sleep 5; ollama pull llama3.2:3b"
+    command: -c "sleep 5; ollama pull qwen2.5:0.5b"
 
 volumes:
   ollama_data:
