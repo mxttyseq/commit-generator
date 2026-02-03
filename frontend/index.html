@@ -20,7 +20,11 @@
         </div>
         <div class="form">
             <textarea id="diff" class="text-input" rows="10" cols="50" placeholder="Paste your git diff here"></textarea>
-            <input id="btn" class="submit-input" type="submit" value="Generate">
+            <button id="btn" class="submit-input" type="submit">Generate</button>
+        </div>
+        <div id="result-container" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc; display: none;">
+            <h3>Navržený commit:</h3>
+            <pre id="output" style="white-space: pre-wrap; background: #f4f4f4; padding: 10px;"></pre>
         </div>
     </div>
     <script type="module" src="./js/script.js"></script>

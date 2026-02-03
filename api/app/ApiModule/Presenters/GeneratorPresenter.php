@@ -56,44 +56,56 @@ class GeneratorPresenter extends Presenter
         $decodedData = Json::decode($postData, true);
         $data = $decodedData['data'] ?? null;
         $url = 'http://ollama:11434/api/generate';
-        $prompt = 'STRICT INPUT VALIDATION:
-Check the input text below. Does it look like a git diff?
-A valid git diff must contain standard markers such as "diff --git", "index", "--- a/", "+++ b/", or hunk headers like "@@ -".
-IF THE INPUT IS NOT A VALID GIT DIFF (e.g., it is random text, conversation, code without context, or empty):
->>> Output strictly the string "null" and nothing else.
+        $prompt = <<<'EOT'
+ROLE:
+You are a strict, automated Git Commit Message Generator. You are NOT a chat assistant. You do not converse. Your only job is to output a raw commit message based on the provided git diff.
 
-If the input IS a valid diff, your task is to generate ONE LINE commit message strictly following the Conventional Commits 1.0.0 standard.
+TASK:
+Analyze the code changes and generate a commit message strictly following the "Conventional Commits" specification.
 
-Rules for commit generation:
-1. Output ONLY the commit message. No quotes, no markdown, no explanation.
-2. Format: <type>(<scope>): <description>
-3. Allowed types: feat, fix, refactor, chore, docs, test, perf, build, ci, style
-4. Scope:
-   - Must be a single short logical area (like api, frontend, auth, core)
-   - NEVER include filenames, directories, or file extensions
-   - Use "core" if there is no clear scope
-5. Description:
-   - Must be lowercase
-   - Must be imperative mood (e.g., "add feature", "fix bug")
-   - Must describe WHAT changed, not HOW
-   - Maximum 72 characters
+STRICT RULES:
+1. Format: `<type>(<optional-scope>): <description>`
+2. The `description` must be in the IMPERATIVE mood (e.g., "add feature", NOT "added feature").
+3. Do NOT end the description with a period.
+4. Keep the first line (header) under 50 characters if possible, never over 72.
+5. If the changes are complex, add a blank line after the header, followed by a bulleted body explaining "what" and "why" (not "how").
+6. Do NOT output markdown code blocks. Output raw text only.
+7. Do NOT include any conversational text.
 
-Decision rules based on the diff:
-- If the change updates configuration files or endpoints only → type = chore
-- If the change fixes incorrect behavior → type = fix
-- If the change adds new functionality → type = feat
-- If the change only renames or moves things → type = refactor
-- If the change only affects documentation → type = docs
-- For tests, use type = test
-- For performance improvements → perf
-- For code formatting/style → style
-- For build/CI changes → build / ci
+ALLOWED TYPES:
+- feat: A new feature
+- fix: A bug fix
+- docs: Documentation only changes
+- style: Changes that do not affect the meaning of the code (white-space, formatting, etc)
+- refactor: A code change that neither fixes a bug nor adds a feature
+- perf: A code change that improves performance
+- test: Adding missing tests or correcting existing tests
+- build: Changes that affect the build system or external dependencies
+- ci: Changes to our CI configuration files and scripts
+- chore: Other changes that don't modify src or test files
 
-Input to analyze:
-';
+EXAMPLE INPUT:
+diff --git a/app.py b/app.py
+index 83f1..02a1 100644
+--- a/app.py
++++ b/app.py
+@@ -10,7 +10,7 @@ def login():
+-    if user.password == password:
++    if check_password_hash(user.password, password):
+
+EXAMPLE OUTPUT:
+fix(auth): use secure password hash verification
+
+Using simple string comparison for passwords created a vulnerability. Replaced with check_password_hash.
+
+INSTRUCTIONS:
+Generate the commit message for the following diff. Output NOTHING else.
+
+DIFF:
+EOT;
         $postData = [
             'json' => [
-                'model' => 'qwen2.5:0.5b',
+                'model' => 'qwen2.5-coder:1.5b',
                 'prompt' => $prompt . $data,
                 'stream' => false,
             ],
