@@ -2,7 +2,6 @@ import { API_URL } from "./config.js";
 
 const button = document.getElementById("btn");
 
-
 button.addEventListener("click", () => {
     const input = document.getElementById("diff");
     const val = input.value;
@@ -17,9 +16,9 @@ button.addEventListener("click", () => {
     })
     .then(response => response.json())
     .then(data => {
-        console.log("Api response:", data)
+        console.log("Api response:", data.response);
     })
     .catch(error => {
-        console.log("Error", error)
+        console.log("Error from url", API_URL, 'err:', error);
     })
 });
