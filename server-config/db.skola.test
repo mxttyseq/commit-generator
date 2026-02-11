@@ -1,0 +1,19 @@
+;
+; BIND data file pro zónu skola.test
+;
+$TTL    604800
+@       IN      SOA     ns1.skola.test. admin.skola.test. (
+                              3         ; Serial (při změně vždy zvyš o 1)
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+; Jmenné servery (NS záznamy)
+@       IN      NS      ns1.skola.test.
+
+; IP adresy pro jmenné servery (A záznamy)
+ns1     IN      A       10.10.10.1
+
+; IP adresy pro tvou aplikaci
+jmenoprijmeni  IN      A       10.10.10.1
